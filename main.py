@@ -1,3 +1,5 @@
+from operator import eq
+
 from ControlVirus import ControlVirus
 import random
 if __name__ == '__main__':
@@ -7,6 +9,8 @@ if __name__ == '__main__':
     cv = ControlVirus()
     vaccine = cv.getVaccine()
     country = cv.getCountry()
+    isTwice = False
+    curedCountry = cv.getCuredCountry()
     for i in range(loop):
         if not a==3:
             cv.printMenu()
@@ -26,6 +30,18 @@ if __name__ == '__main__':
             else:
                 vaccineInput = random.randint(1, 3)
                 countryInput = random.randint(1, 5)
+                for indexNum in range(cv.getCompletelyCured()):
+                    print('이미 완치된 국가===')
+                    print(curedCountry[indexNum])
+                    print('비교 국가===')
+                    print(country[countryInput-1][0])                 
+                    if eq(curedCountry[indexNum],country[countryInput-1][0]):
+
+                        isTwice = True
+                        break
+                if isTwice == True:
+                    print('이미 완치된 국가이므로 다시 선택합니다.')
+                    continue
 
             outOfRange = cv.cure(i, vaccineInput-1, countryInput-1)
             if outOfRange:
