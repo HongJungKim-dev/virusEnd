@@ -108,10 +108,6 @@ def cure(self, loop, vaccine_in, country_in):
         self.country = country
     if country[country_in][2] == 0:
         if not eq(country[country_in][0], curedCountry[completelyCured - 1]):
-            print('target')
-            print(country[country_in][0])
-            print('comp')
-            print(curedCountry[completelyCured - 1])
             curedCountry[completelyCured] = country[country_in][0]
             self.setCompletelyCured(completelyCured + 1)
             print("=" * 30)
@@ -151,10 +147,6 @@ if __name__ == '__main__':
                 vaccineInput = random.randint(1, 3)
                 countryInput = random.randint(1, 5)
                 for indexNum in range(cv.getCompletelyCured()):
-                    print('이미 완치된 국가===')
-                    print(curedCountry[indexNum])
-                    print('비교 국가===')
-                    print(country[countryInput-1][0])                 
                     if eq(curedCountry[indexNum],country[countryInput-1][0]):
 
                         isTwice = True
