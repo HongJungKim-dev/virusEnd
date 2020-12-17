@@ -69,29 +69,30 @@ def printMenu():
 def printScore(i, country, newInfected, cured, curedCountry):
     curedCountryNum = 0
     print(f'=' * 30)
-    print('     최종 결과     ')
+    print('          최종 결과     ')
     #print(str(i)+'차 백신 투여 후 감염된 나라에 대한 정보')
     print(f'=' * 30)
     print('라운드마다 추가로 감염된 감염자 수: '+str(newInfected))
     print('백신으로 치료된 감염자 수: '+str(cured))
     for i in range(len(country)):
         if country[i][2]==0:
-            curedCountryNum=curedCountryNum+1
-            curedCountry+=' '
-            curedCountry+=country[i][0]
+           curedCountryNum=curedCountryNum+1
+            # curedCountry+=' '
+            # curedCountry+=country[i][0]
 
     print('백신으로 완치된 국가:'+curedCountry+'('+str(curedCountryNum)+'개)')
     country.sort(key=itemgetter(2), reverse=True)
-    printResult(country)
+    printResult(i, country)
     print('게임 종료!')
 
 
-def infecteeIncrease(country, totalNewInfected):
-    currentNewInfected = 0
+def infecteeIncrease(country, totalNewInfected, countryInput):
+    print("증가\n")
     for i in range(len(country)):
-        currentNewInfected = country[i][2]*0.15
-        country[i][2] += currentNewInfected
+        currentNewInfected = int(country[i][2]*0.15)
+        country[countryInput][2] += currentNewInfected
         totalNewInfected += currentNewInfected
+        print(str(totalNewInfected)+'\n')
 
 
 def checkFinished(name):
@@ -102,22 +103,22 @@ def checkFinished(name):
             return False
 
 
-def cure(loop,country, vaccine, vaccine_in, country_in, cured, curedCountry):
-    curedNum=0
-    i=0
-    print(' ★ '+str(i+1)+'번째 시도 ★\n')
+def cure(loop,country, vaccine, vaccine_in, country_in, infected, cured, curedCountry):
+    print(' ★ '+str(loop+1)+'번째 시도 ★\n')
     print('선택된 백신: '+vaccine[vaccine_in][0]+', 치료율: '+str(vaccine[vaccine_in][1])+'.0%')
     print('선택된 나라: '+country[country_in][0]+', 인구수: '+str(country[country_in][1])+
           ', 감염자수: '+str(country[country_in][2]))
-    cured = int(country[country_in][2]*(vaccine[vaccine_in][1] / 100))
-    country[country_in][2] -= cured
+    curCured = int(country[country_in][2]*(vaccine[vaccine_in][1] / 100))
+    infected -= curCured
+    cured += curCured
+    country[country_in][2] -= curCured
 
     for i in range(len(country)):
         if country[i][2] == 0:
             curedCountry += ' '
             curedCountry += country[i][0]
     print("=" * 30)
-    if not curedCountry:
+    if not curedCountry=="":
         print("완치 된 국가:" + curedCountry + '\n')
     print(str(loop + 1) + '차 백신 투여 후 감염된 나라에 대한 정보')
     print("=" * 30)
@@ -143,8 +144,10 @@ if __name__ == '__main__':
     curedCountry = ""
     i=0
     loop = 5
+    a = 0
     for i in range(loop):
-        printMenu()
+        if not a==3:
+            printMenu()
         if (i == 0):
             a = int(input())
         if a == 1:
@@ -156,36 +159,31 @@ if __name__ == '__main__':
         elif a == 3:
             if i == 0:
                 print('사용할 백신(1~3)과 백신을 적용할 국가(1~5)의 번호를 차례대로 입력하세요')
-                #vaccine_input, country_input = int(input('사용할 백신(1~3)과 백신을 적용할 국가(1~5)의 번호를 차례대로 입력하세요').split())
                 b,c = input().split()
                 vaccineInput = int(b)
-                contryInput = int(c)
-
-                #contry_input = input()
+                countryInput = int(c)
             else:
                 vaccineInput = random.randint(1, 3)
-                contryInput = random.randint(1, 5)
-            #print(vaccine_input, country_input)
-            outOfRange = cure(i, country, vaccine, vaccineInput-1, contryInput-1, cured, curedCountry)
+                countryInput = random.randint(1, 5)
+
+            outOfRange = cure(i, country, vaccine, vaccineInput-1, countryInput-1, country[countryInput-1][2], cured,curedCountry)
             if outOfRange:
                 print('감염자 수가 인구 수보다 많은 국가가 발생하였습니다. 게임을 중단합니다 !!')
                 printScore(i, country, newInfected, cured, curedCountry)
+                print('^' * 30 + '\n')
+                print(outOfRange)
                 break
-            # for j in range(len(country)):
-            #     if not checkFinished(country):
-            #         print("="*50)
-            #         print(str(i+1)+'차 백신 투여 후 감염된 나라에 대한 정보')
-            #         print("=" * 50)
-            #         printResult(j, country)
             if outOfRange==len(country):
+                print('^'*30+'\n')
+                print(outOfRange)
                 break
         elif a == 4:
             print('게임을 종료합니다')
             break
-        infecteeIncrease(country, newInfected)
+        infecteeIncrease(country, newInfected ,countryInput-1)
+        if not a==3:
+            a = 0
 
-    if a==loop:
+    if i==loop-1:
         printScore(i, country, newInfected, cured, curedCountry)
 
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
